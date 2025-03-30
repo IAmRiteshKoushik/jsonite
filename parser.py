@@ -16,6 +16,7 @@ def parse_array(tokens: list) -> tuple[list, list]:
         json, tokens = parse(tokens)
         json_array.append(json)
 
+        t = tokens[0]
         if t == JSON_RIGHTBRACKET:
             return json_array, tokens[1:]
         elif t != JSON_COMMA:
