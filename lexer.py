@@ -1,5 +1,5 @@
 from typing import TypeAlias
-c = __import__("constants.py")
+from constants import *
 
 StringType: TypeAlias = str | None
 NumberType: TypeAlias = int | float | None
@@ -8,13 +8,13 @@ Token: TypeAlias = StringType | NumberType | BooleanType
 
 def lex_string(input_string: str) -> tuple[StringType, str]:
     json_string = ''
-    if input_string[0] == c.JSON_QUOTE:
+    if input_string[0] == JSON_QUOTE:
         input_string = input_string[1:]
     else:
         return None, input_string
 
     for char in input_string:
-        if char == c.JSON_QUOTE:
+        if char == JSON_QUOTE:
             return json_string, input_string[len(json_string) + 1:]
         else:
             json_string += char
@@ -46,17 +46,17 @@ def lex_number(input_string: str) -> tuple[NumberType, str]:
 def lex_bool(input_string: str) -> tuple[BooleanType, str]:
     string_len = len(input_string)
 
-    if string_len >= c.TRUE_LEN and input_string[:c.TRUE_LEN] == 'true':
-        return True, input_string[c.TRUE_LEN:]
-    elif string_len >= c.FALSE_LEN and input_string[:c.FALSE_LEN] == 'false':
-        return False, input_string[c.FALSE_LEN:]
+    if string_len >= TRUE_LEN and input_string[:TRUE_LEN] == 'true':
+        return True, input_string[TRUE_LEN:]
+    elif string_len >= FALSE_LEN and input_string[:FALSE_LEN] == 'false':
+        return False, input_string[FALSE_LEN:]
 
     return None, input_string
 
 def lex_null(input_string: str) -> tuple[BooleanType, str]:
     string_len = len(input_string)
-    if string_len >= c.NULL_LEN and input_string[:c.NULL_LEN] == 'null':
-        return True, input_string[c.NULL_LEN:]
+    if string_len >= NULL_LEN and input_string[:NULL_LEN] == 'null':
+        return True, input_string[NULL_LEN:]
 
     return None, input_string
 
@@ -98,9 +98,9 @@ def lex(input_json: str) -> list[Token]:
             tokens.append(None)
             continue
 
-        if string[0] in c.JSON_WHITESPACE:
+        if string[0] in JSON_WHITESPACE:
             string = string[1:]
-        elif string[0] in c.JSON_SYNTAX:
+        elif string[0] in JSON_SYNTAX:
             tokens.append(string[0])
             string = string[1:]
         else:

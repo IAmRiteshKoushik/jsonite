@@ -1,5 +1,6 @@
-c = __import__("constants.py")
-l = __import__("lexer.py")
+from lexer import lex
+from constants import *
+
 from typing import TypeAlias
 
 ParsedType: TypeAlias = dict | list
@@ -8,16 +9,16 @@ def parse_array(tokens: list) -> tuple[list, list]:
     json_array = []
 
     t = tokens[0]
-    if t == c.JSON_RIGHTBRACKET:
+    if t == JSON_RIGHTBRACKET:
         return json_array, tokens[1:]
 
     while True:
         json, tokens = parse(tokens)
         json_array.append(json)
 
-        if t == c.JSON_RIGHTBRACKET:
+        if t == JSON_RIGHTBRACKET:
             return json_array, tokens[1:]
-        elif t != c.JSON_COMMA:
+        elif t != JSON_COMMA:
             raise Exception('Expected comma after object in array')
         else:
             tokens = tokens[1:]
@@ -28,7 +29,7 @@ def parse_object(tokens: list) -> tuple[dict, list]:
     json_object = {}
 
     t = tokens[0]
-    if t == c.JSON_RIGHTBRACE:
+    if t == JSON_RIGHTBRACE:
         return json_object, tokens[1:]
 
     while True:
@@ -38,16 +39,16 @@ def parse_object(tokens: list) -> tuple[dict, list]:
         else:
             raise Exception('Expected string key, got: {}'.format(json_key))
 
-        if tokens[0] != c.JSON_COLON:
+        if tokens[0] != JSON_COLON:
             raise Exception('Expected color after key in object, got: {}'.format(t))
 
         json_value, tokens = parse(tokens[1:])
         json_object[json_key] = json_value
 
         t = tokens[0]
-        if t == c.JSON_RIGHTBRACE:
+        if t == JSON_RIGHTBRACE:
             return json_object, tokens[1:]
-        elif t != c.JSON_COMMA:
+        elif t != JSON_COMMA:
             raise Exception('Expected comma after pair in object, got: {}'.format(t))
 
         tokens = tokens[1:]
@@ -57,9 +58,9 @@ def parse_object(tokens: list) -> tuple[dict, list]:
 def parse(tokens) -> tuple[ParsedType, list]:
     t = tokens[0]
 
-    if t == c.JSON_LEFTBRACKET:
+    if t == JSON_LEFTBRACKET:
         return parse_array(tokens[1:])
-    elif t == c.JSON_LEFTBRACE:
+    elif t == JSON_LEFTBRACE:
         return parse_object(tokens[1:])
     else:
         return t, tokens[1:]
@@ -67,5 +68,5 @@ def parse(tokens) -> tuple[ParsedType, list]:
 
 # Unifying interface
 def from_string(json_str: str) -> ParsedType:
-    tokens = l.lex(json_str)
+    tokens = lex(json_str)
     return parse(tokens)[0]
