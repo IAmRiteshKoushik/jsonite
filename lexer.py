@@ -75,35 +75,35 @@ def lex(input_json: str) -> list[Token]:
     while len(input_json):
 
         # 1. Check for string
-        json_string, string = lex_string(input_json)
+        json_string, input_json = lex_string(input_json)
         if json_string is not None:
             tokens.append(json_string)
             continue
 
         # 2. Check for number
-        json_number, string = lex_number(input_json)
+        json_number, input_json = lex_number(input_json)
         if json_number is not None:
             tokens.append(json_number)
             continue
 
         # 3. Check for boolean
-        json_bool, string = lex_bool(input_json)
+        json_bool, input_json = lex_bool(input_json)
         if json_bool is not None:
             tokens.append(json_bool)
             continue
 
         # 4. Check for null
-        json_null, string = lex_null(input_json)
+        json_null, input_json = lex_null(input_json)
         if json_null is not None:
             tokens.append(None)
             continue
 
-        if string[0] in JSON_WHITESPACE:
-            string = string[1:]
-        elif string[0] in JSON_SYNTAX:
-            tokens.append(string[0])
-            string = string[1:]
+        if input_json[0] in JSON_WHITESPACE:
+            input_json = input_json[1:]
+        elif input_json[0] in JSON_SYNTAX:
+            tokens.append(input_json[0])
+            input_json = input_json[1:]
         else:
-            raise Exception("Unexpected character: {}".format(string[0]))
+            raise Exception("Unexpected character: {}".format(input_json[0]))
 
     return tokens
