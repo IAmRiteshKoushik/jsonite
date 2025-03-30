@@ -55,9 +55,11 @@ def parse_object(tokens: list) -> tuple[dict, list]:
 
     raise Exception('Expected end-of-object brace')
 
-def parse(tokens) -> tuple[ParsedType, list]:
+def parse(tokens, is_root = False) -> tuple[ParsedType, list]:
     t = tokens[0]
 
+    if is_root and t != JSON_LEFTBRACE:
+        raise Exception('Root must be an object')
     if t == JSON_LEFTBRACKET:
         return parse_array(tokens[1:])
     elif t == JSON_LEFTBRACE:
@@ -69,4 +71,4 @@ def parse(tokens) -> tuple[ParsedType, list]:
 # Unifying interface
 def from_string(json_str: str) -> ParsedType:
     tokens = lex(json_str)
-    return parse(tokens)[0]
+    return parse(tokens, is_root = True)[0]
